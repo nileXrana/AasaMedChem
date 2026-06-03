@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { signOut } from "next-auth/react";
@@ -40,6 +40,7 @@ import {
   displayToBase,
   calculateLinePrice,
 } from "@/lib/conversions";
+import { Search, ShoppingCart, ShoppingBag, LogOut, Package2, X, Plus, Calculator, ArrowRight } from "lucide-react";
 
 type SerializedProduct = {
   id: string;
@@ -189,7 +190,7 @@ export function SellerContent({
       }));
 
     if (items.length === 0) {
-      setOrderMessage("Please add quantities to your items");
+      setOrderMessage("Please add valid quantities to your items");
       setOrderLoading(false);
       return;
     }
@@ -198,7 +199,7 @@ export function SellerContent({
 
     if (result.error) {
       setOrderMessage(
-        typeof result.error === "string" ? result.error : "Order failed"
+        typeof result.error === "string" ? result.error : "Order failed due to insufficient stock or invalid quantity"
       );
     } else {
       setOrderMessage("Order placed successfully!");
@@ -210,83 +211,78 @@ export function SellerContent({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-              </svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
+              <Package2 className="h-5 w-5" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white">Seller Dashboard</h1>
-              <p className="text-xs text-slate-400">{user.name} · {user.email}</p>
+              <h1 className="text-lg font-semibold text-gray-900">Seller Portal</h1>
+              <p className="text-xs font-medium text-gray-500">{user.email}</p>
             </div>
           </div>
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+            className="text-gray-500 hover:text-gray-900 hover:bg-gray-100"
           >
-            Sign Out
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign out
           </Button>
         </div>
       </header>
 
-      {/* Content */}
+      {/* Main Content */}
       <main className="mx-auto max-w-7xl px-6 py-8">
-        <Tabs defaultValue="order" className="space-y-6">
-          <TabsList className="bg-slate-800/50 border border-slate-700/50">
-            <TabsTrigger value="order" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+        <Tabs defaultValue="order" className="space-y-8">
+          <TabsList className="bg-white border border-gray-200 p-1 shadow-sm">
+            <TabsTrigger value="order" className="data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900 data-[state=active]:shadow-sm px-4 py-2">
+              <ShoppingCart className="mr-2 h-4 w-4" />
               New Order
             </TabsTrigger>
-            <TabsTrigger value="history" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
-              My Orders ({orders.length})
+            <TabsTrigger value="history" className="data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900 data-[state=active]:shadow-sm px-4 py-2">
+              <ShoppingBag className="mr-2 h-4 w-4" />
+              Order History
             </TabsTrigger>
           </TabsList>
 
           {/* ─── New Order Tab ─── */}
           <TabsContent value="order" className="space-y-6">
-            <div className="grid gap-6 lg:grid-cols-5">
+            <div className="grid gap-6 lg:grid-cols-5 items-start">
+              
               {/* Product Search — left panel */}
               <div className="space-y-4 lg:col-span-3">
-                <Card className="border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-white">Search Products</CardTitle>
-                    <CardDescription className="text-slate-400">
-                      Search filters products on the server using indexed name lookup
+                <Card className="border border-gray-200 shadow-sm bg-white">
+                  <CardHeader className="border-b border-gray-100 pb-4">
+                    <CardTitle className="text-lg font-semibold text-gray-900">Search Products</CardTitle>
+                    <CardDescription className="text-gray-500">
+                      Search catalog to add items to your cart.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="relative">
-                      <svg
-                        className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
+                  <CardContent className="p-6">
+                    <div className="relative mb-6">
+                      <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
                       <Input
                         id="product-search"
                         value={searchValue}
                         onChange={handleSearchChange}
-                        placeholder="Type to search products..."
-                        className="pl-10 border-slate-700 bg-slate-800/50 text-white placeholder:text-slate-500 focus:border-emerald-500"
+                        placeholder="Search for products by name..."
+                        className="pl-10 h-12 text-base border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                       />
                     </div>
 
                     {products.length === 0 ? (
-                      <p className="py-8 text-center text-slate-500">
-                        No products found
-                      </p>
+                      <div className="py-12 text-center">
+                        <Search className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900">No products found</h3>
+                        <p className="text-gray-500 mt-1">Try adjusting your search terms.</p>
+                      </div>
                     ) : (
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         {products.map((product) => {
                           const inCart = cart.some(
                             (item) => item.product.id === product.id
@@ -298,35 +294,40 @@ export function SellerContent({
                           return (
                             <div
                               key={product.id}
-                              className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-800/30 p-3 transition-colors hover:border-slate-700"
+                              className={`flex items-center justify-between rounded-xl border p-4 transition-all ${
+                                inCart ? "border-blue-200 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300 shadow-sm"
+                              }`}
                             >
                               <div>
-                                <p className="font-medium text-white">
+                                <p className="font-semibold text-gray-900 text-base">
                                   {product.name}
                                 </p>
-                                <div className="flex items-center gap-3 mt-1">
-                                  <Badge variant="outline" className="border-slate-600 text-slate-400 text-xs">
+                                <div className="flex flex-wrap items-center gap-3 mt-2">
+                                  <Badge variant="secondary" className="bg-gray-100 text-gray-600 font-medium text-xs">
                                     {product.dimensionType}
                                   </Badge>
-                                  <span className="text-xs text-slate-500">
-                                    {formatPrice(BigInt(product.pricePerBaseUnit))}/{baseLabel}
+                                  <span className="text-sm font-medium text-gray-900">
+                                    {formatPrice(BigInt(product.pricePerBaseUnit))}<span className="text-gray-500 font-normal">/{baseLabel}</span>
                                   </span>
-                                  <span className="text-xs text-emerald-500">
-                                    Stock: {BigInt(product.stockBaseQuantity).toLocaleString()} {baseLabel}
+                                  <span className="text-sm text-gray-500 flex items-center">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-green-500 mr-2"></span>
+                                    In stock: {BigInt(product.stockBaseQuantity).toLocaleString()} {baseLabel}
                                   </span>
                                 </div>
                               </div>
                               <Button
                                 size="sm"
+                                variant={inCart ? "secondary" : "default"}
                                 disabled={inCart}
                                 onClick={() => addToCart(product)}
-                                className={
-                                  inCart
-                                    ? "bg-slate-700 text-slate-400"
-                                    : "bg-emerald-600 hover:bg-emerald-500 text-white"
-                                }
+                                className={inCart ? "bg-white text-blue-600 border border-blue-200 pointer-events-none" : "bg-blue-600 hover:bg-blue-700 text-white"}
                               >
-                                {inCart ? "Added" : "Add"}
+                                {inCart ? "In Cart" : (
+                                  <>
+                                    <Plus className="mr-1.5 h-4 w-4" />
+                                    Add
+                                  </>
+                                )}
                               </Button>
                             </div>
                           );
@@ -338,20 +339,26 @@ export function SellerContent({
               </div>
 
               {/* Cart — right panel */}
-              <div className="space-y-4 lg:col-span-2">
-                <Card className="border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-white">
-                      Order Cart ({cart.length} items)
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+              <div className="space-y-4 lg:col-span-2 sticky top-24">
+                <Card className="border border-gray-200 shadow-md bg-white overflow-hidden">
+                  <div className="bg-gray-50 border-b border-gray-200 p-4 flex justify-between items-center">
+                    <h2 className="text-lg font-semibold text-gray-900 flex items-center">
+                      <ShoppingCart className="mr-2 h-5 w-5 text-blue-600" />
+                      Order Cart
+                    </h2>
+                    <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 font-bold px-2 py-1">
+                      {cart.length} items
+                    </Badge>
+                  </div>
+                  
+                  <CardContent className="p-0">
                     {cart.length === 0 ? (
-                      <p className="py-8 text-center text-slate-500">
-                        Add products from the search panel
-                      </p>
+                      <div className="p-10 text-center">
+                        <ShoppingCart className="mx-auto h-12 w-12 text-gray-200 mb-3" />
+                        <p className="text-gray-500 text-sm">Your cart is empty. Add products from the catalog to begin.</p>
+                      </div>
                     ) : (
-                      <>
+                      <div className="divide-y divide-gray-100 max-h-[500px] overflow-y-auto">
                         {cart.map((item) => {
                           const units = getUnitsForDimension(
                             item.product.dimensionType as
@@ -372,30 +379,24 @@ export function SellerContent({
                           );
 
                           return (
-                            <div
-                              key={item.product.id}
-                              className="rounded-lg border border-slate-800 bg-slate-800/30 p-3 space-y-3"
-                            >
-                              <div className="flex items-center justify-between">
-                                <p className="font-medium text-white text-sm">
+                            <div key={item.product.id} className="p-5 hover:bg-gray-50/50 transition-colors">
+                              <div className="flex items-start justify-between mb-3">
+                                <p className="font-semibold text-gray-900 leading-tight pr-4">
                                   {item.product.name}
                                 </p>
                                 <button
-                                  onClick={() =>
-                                    removeFromCart(item.product.id)
-                                  }
-                                  className="text-slate-500 hover:text-red-400 transition-colors"
+                                  onClick={() => removeFromCart(item.product.id)}
+                                  className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-1 rounded transition-colors"
+                                  title="Remove item"
                                 >
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                  </svg>
+                                  <X className="h-4 w-4" />
                                 </button>
                               </div>
 
-                              <div className="flex gap-2">
+                              <div className="flex gap-3 items-end mb-3">
                                 <div className="flex-1">
-                                  <Label className="text-xs text-slate-400">
-                                    Quantity
+                                  <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5 block">
+                                    Qty
                                   </Label>
                                   <Input
                                     type="number"
@@ -408,12 +409,12 @@ export function SellerContent({
                                         e.target.value
                                       )
                                     }
-                                    placeholder="0.000000"
-                                    className="h-8 border-slate-700 bg-slate-800/50 text-white text-sm placeholder:text-slate-600"
+                                    placeholder="0.0"
+                                    className="h-9 border-gray-300 focus:border-blue-500 focus:ring-blue-500 font-mono text-sm"
                                   />
                                 </div>
                                 <div className="w-24">
-                                  <Label className="text-xs text-slate-400">
+                                  <Label className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5 block">
                                     Unit
                                   </Label>
                                   <Select
@@ -426,12 +427,12 @@ export function SellerContent({
                                       )
                                     }
                                   >
-                                    <SelectTrigger className="h-8 border-slate-700 bg-slate-800/50 text-white text-sm">
+                                    <SelectTrigger className="h-9 border-gray-300 focus:border-blue-500 focus:ring-blue-500 font-mono text-sm">
                                       <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent className="border-slate-700 bg-slate-800">
+                                    <SelectContent>
                                       {units.map((u) => (
-                                        <SelectItem key={u} value={u}>
+                                        <SelectItem key={u} value={u} className="font-mono text-sm">
                                           {u}
                                         </SelectItem>
                                       ))}
@@ -442,12 +443,14 @@ export function SellerContent({
 
                               {/* Live calculation display */}
                               {item.quantity && (
-                                <div className="flex items-center justify-between rounded-md bg-slate-900/50 p-2">
-                                  <span className="text-xs text-slate-400">
-                                    = {BigInt(calc.baseQty).toLocaleString()}{" "}
-                                    {baseLabel}
-                                  </span>
-                                  <span className="text-sm font-semibold text-emerald-400">
+                                <div className="flex items-center justify-between rounded-lg bg-blue-50 p-3 border border-blue-100">
+                                  <div className="flex items-center text-xs text-blue-700">
+                                    <Calculator className="h-3.5 w-3.5 mr-1.5 opacity-70" />
+                                    <span>
+                                      {BigInt(calc.baseQty).toLocaleString()} {baseLabel}
+                                    </span>
+                                  </div>
+                                  <span className="text-sm font-bold text-gray-900">
                                     {calc.price}
                                   </span>
                                 </div>
@@ -455,38 +458,45 @@ export function SellerContent({
                             </div>
                           );
                         })}
-
-                        {/* Order Total & Submit */}
-                        <div className="border-t border-slate-700 pt-4 space-y-3">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-slate-300">
-                              Total
-                            </span>
-                            <span className="text-xl font-bold text-white">
-                              {formatPrice(cartTotal)}
-                            </span>
-                          </div>
-                          <Button
-                            onClick={handlePlaceOrder}
-                            disabled={orderLoading || cart.length === 0}
-                            className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-500/25"
-                          >
-                            {orderLoading ? "Placing Order..." : "Place Order"}
-                          </Button>
-                          {orderMessage && (
-                            <p
-                              className={`text-center text-sm ${
-                                orderMessage.includes("success")
-                                  ? "text-emerald-400"
-                                  : "text-red-400"
-                              }`}
-                            >
-                              {orderMessage}
-                            </p>
-                          )}
-                        </div>
-                      </>
+                      </div>
                     )}
+                    
+                    {/* Order Total & Submit */}
+                    <div className="bg-gray-50 border-t border-gray-200 p-5">
+                      <div className="flex items-end justify-between mb-5">
+                        <span className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                          Subtotal
+                        </span>
+                        <span className="text-2xl font-bold text-gray-900 leading-none">
+                          {formatPrice(cartTotal)}
+                        </span>
+                      </div>
+                      
+                      <Button
+                        onClick={handlePlaceOrder}
+                        disabled={orderLoading || cart.length === 0}
+                        className="w-full h-12 text-base font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                      >
+                        {orderLoading ? (
+                          "Processing..."
+                        ) : (
+                          <>
+                            Place Order
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                          </>
+                        )}
+                      </Button>
+                      
+                      {orderMessage && (
+                        <div className={`mt-3 p-3 rounded-lg text-sm font-medium border ${
+                          orderMessage.includes("success")
+                            ? "bg-green-50 text-green-800 border-green-200"
+                            : "bg-red-50 text-red-800 border-red-200"
+                        }`}>
+                          {orderMessage}
+                        </div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -494,63 +504,68 @@ export function SellerContent({
           </TabsContent>
 
           {/* ─── Order History Tab ─── */}
-          <TabsContent value="history" className="space-y-4">
+          <TabsContent value="history" className="space-y-6">
             {orders.length === 0 ? (
-              <Card className="border-slate-800 bg-slate-900/60">
-                <CardContent className="py-12 text-center text-slate-400">
-                  You haven&apos;t placed any orders yet
+              <Card className="border border-gray-200 shadow-sm bg-white">
+                <CardContent className="py-16 text-center">
+                  <ShoppingBag className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900">No orders placed yet</h3>
+                  <p className="text-gray-500 mt-1">Your successful orders will appear here.</p>
                 </CardContent>
               </Card>
             ) : (
-              orders.map((order) => (
-                <Card key={order.id} className="border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle className="text-base text-white">
-                          Order #{order.id.slice(0, 8)}
-                        </CardTitle>
-                        <CardDescription className="text-slate-400">
-                          {new Date(order.createdAt).toLocaleString()}
-                        </CardDescription>
+              <div className="grid gap-6">
+                {orders.map((order) => (
+                  <Card key={order.id} className="border border-gray-200 shadow-sm bg-white overflow-hidden">
+                    <CardHeader className="bg-gray-50 border-b border-gray-200 pb-4 pt-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <CardTitle className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                            Order #{order.id.slice(0, 8)}
+                            <Badge className="bg-green-100 text-green-800 hover:bg-green-200 border-none font-medium">
+                              {order.status}
+                            </Badge>
+                          </CardTitle>
+                          <CardDescription className="text-gray-500 mt-1">
+                            Placed on {new Date(order.createdAt).toLocaleString()}
+                          </CardDescription>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium text-gray-500 mb-1">Total</p>
+                          <p className="text-xl font-bold text-gray-900">
+                            {formatPrice(BigInt(order.totalPrice))}
+                          </p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
-                          {order.status}
-                        </Badge>
-                        <p className="mt-1 text-lg font-bold text-white">
-                          {formatPrice(BigInt(order.totalPrice))}
-                        </p>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="border-slate-800 hover:bg-transparent">
-                          <TableHead className="text-slate-400">Product</TableHead>
-                          <TableHead className="text-slate-400">Quantity</TableHead>
-                          <TableHead className="text-right text-slate-400">Price</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {order.items.map((item) => (
-                          <TableRow key={item.id} className="border-slate-800/50 hover:bg-slate-800/20">
-                            <TableCell className="text-white">{item.product.name}</TableCell>
-                            <TableCell className="font-mono text-sm text-indigo-400">
-                              {Number(item.requestedDisplayQuantity).toFixed(6)}{" "}
-                              {item.requestedDisplayUnit}
-                            </TableCell>
-                            <TableCell className="text-right font-medium text-white">
-                              {formatPrice(BigInt(item.lineItemPrice))}
-                            </TableCell>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <Table>
+                        <TableHeader className="bg-white">
+                          <TableRow className="border-b border-gray-100 hover:bg-white">
+                            <TableHead className="text-xs font-semibold uppercase tracking-wider text-gray-500 h-10">Product</TableHead>
+                            <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-gray-500 h-10">Quantity</TableHead>
+                            <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-gray-500 h-10">Line Price</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                </Card>
-              ))
+                        </TableHeader>
+                        <TableBody>
+                          {order.items.map((item) => (
+                            <TableRow key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                              <TableCell className="font-medium text-gray-900">{item.product.name}</TableCell>
+                              <TableCell className="text-right font-mono text-sm text-gray-600">
+                                {Number(item.requestedDisplayQuantity).toFixed(6)}{" "}
+                                {item.requestedDisplayUnit}
+                              </TableCell>
+                              <TableCell className="text-right font-medium text-gray-900">
+                                {formatPrice(BigInt(item.lineItemPrice))}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             )}
           </TabsContent>
         </Tabs>

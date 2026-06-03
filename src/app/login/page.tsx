@@ -6,13 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Loader2, Package2 } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,10 +28,9 @@ export default function LoginPage() {
       redirect: false,
     });
 
-    setLoading(false);
-
     if (result?.error) {
       setError("Invalid email or password");
+      setLoading(false);
       return;
     }
 
@@ -53,42 +46,29 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-indigo-500/10 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-purple-500/10 blur-3xl" />
-      </div>
-
-      <Card className="relative w-full max-w-md border-slate-800 bg-slate-900/80 backdrop-blur-xl shadow-2xl">
-        <CardHeader className="text-center space-y-2">
-          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-7 w-7 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 sm:p-8">
+      <div className="w-full max-w-md">
+        {/* Brand Header */}
+        <div className="mb-8 flex flex-col items-center text-center space-y-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm">
+            <Package2 className="h-6 w-6" />
           </div>
-          <CardTitle className="text-2xl font-bold text-white">
-            AASA MedChem
-          </CardTitle>
-          <CardDescription className="text-slate-400">
-            Inventory & Order Management System
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+              AASA MedChem
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Inventory & Order Management System
+            </p>
+          </div>
+        </div>
+
+        {/* Login Card */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-300">
-                Email
+              <Label htmlFor="email" className="text-sm font-medium text-gray-900">
+                Email address
               </Label>
               <Input
                 id="email"
@@ -96,71 +76,60 @@ export default function LoginPage() {
                 type="email"
                 placeholder="admin@aasa.com"
                 required
-                className="border-slate-700 bg-slate-800/50 text-white placeholder:text-slate-500 focus:border-indigo-500 focus:ring-indigo-500/20"
+                className="h-10 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
+            
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-300">
-                Password
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-sm font-medium text-gray-900">
+                  Password
+                </Label>
+              </div>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 placeholder="••••••••"
                 required
-                className="border-slate-700 bg-slate-800/50 text-white placeholder:text-slate-500 focus:border-indigo-500 focus:ring-indigo-500/20"
+                className="h-10 w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
             {error && (
-              <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
-                {error}
+              <div className="rounded-md bg-red-50 p-3">
+                <p className="text-sm font-medium text-red-800">{error}</p>
               </div>
             )}
 
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-medium shadow-lg shadow-indigo-500/25 transition-all duration-200"
+              className="h-10 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium"
             >
               {loading ? (
-                <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Signing in...
-                </span>
+                </>
               ) : (
-                "Sign In"
+                "Sign in"
               )}
             </Button>
-
-            <div className="rounded-lg border border-slate-700/50 bg-slate-800/30 p-3 space-y-1">
-              <p className="text-xs font-medium text-slate-400">Demo Accounts</p>
-              <p className="text-xs text-slate-500">
-                Admin: admin@aasa.com / admin123
-              </p>
-              <p className="text-xs text-slate-500">
-                Seller: seller@aasa.com / seller123
-              </p>
-            </div>
           </form>
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Demo Credentials Hint */}
+        <div className="mt-8 rounded-xl border border-blue-100 bg-blue-50/50 p-4 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-2">
+            Demo Accounts
+          </p>
+          <div className="flex justify-center gap-6 text-sm text-gray-600">
+            <p><span className="font-medium text-gray-900">Admin:</span> admin@aasa.com (admin123)</p>
+            <p><span className="font-medium text-gray-900">Seller:</span> seller@aasa.com (seller123)</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

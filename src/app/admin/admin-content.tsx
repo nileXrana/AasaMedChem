@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatPrice, baseToDisplay, getBaseUnitLabel } from "@/lib/conversions";
+import { LogOut, Package2, Plus, Box, FileText } from "lucide-react";
 
 type SerializedProduct = {
   id: string;
@@ -88,72 +89,73 @@ export function AdminContent({ products: initialProducts, orders, user }: AdminC
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
+              <Package2 className="h-5 w-5" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-white">Admin Dashboard</h1>
-              <p className="text-xs text-slate-400">{user.name} · {user.email}</p>
+              <h1 className="text-lg font-semibold text-gray-900">Admin Console</h1>
+              <p className="text-xs font-medium text-gray-500">{user.email}</p>
             </div>
           </div>
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+            className="text-gray-500 hover:text-gray-900 hover:bg-gray-100"
           >
-            Sign Out
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign out
           </Button>
         </div>
       </header>
 
-      {/* Content */}
+      {/* Main Content */}
       <main className="mx-auto max-w-7xl px-6 py-8">
-        <Tabs defaultValue="products" className="space-y-6">
-          <TabsList className="bg-slate-800/50 border border-slate-700/50">
-            <TabsTrigger value="products" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white">
-              Products ({products.length})
+        <Tabs defaultValue="products" className="space-y-8">
+          <TabsList className="bg-white border border-gray-200 p-1 shadow-sm">
+            <TabsTrigger value="products" className="data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900 data-[state=active]:shadow-sm px-4 py-2">
+              <Box className="mr-2 h-4 w-4" />
+              Products
             </TabsTrigger>
-            <TabsTrigger value="orders" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white">
-              Orders ({orders.length})
+            <TabsTrigger value="orders" className="data-[state=active]:bg-gray-100 data-[state=active]:text-gray-900 data-[state=active]:shadow-sm px-4 py-2">
+              <FileText className="mr-2 h-4 w-4" />
+              Orders
             </TabsTrigger>
           </TabsList>
 
           {/* ─── Products Tab ─── */}
           <TabsContent value="products" className="space-y-6">
             {/* Add Product Form */}
-            <Card className="border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-white">Add New Product</CardTitle>
-                <CardDescription className="text-slate-400">
-                  Prices in paise per base unit · Stock in base units (mg/mL/units)
+            <Card className="border border-gray-200 shadow-sm bg-white">
+              <CardHeader className="border-b border-gray-100 pb-4">
+                <CardTitle className="text-lg font-semibold text-gray-900">Add New Product</CardTitle>
+                <CardDescription className="text-gray-500">
+                  Enter product details. Prices are in paise per base unit. Stock is in base units (mg/mL/units).
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <form action={handleAddProduct} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              <CardContent className="pt-6">
+                <form action={handleAddProduct} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
                   <div className="space-y-2 lg:col-span-2">
-                    <Label className="text-slate-300">Product Name</Label>
+                    <Label className="text-sm font-medium text-gray-700">Product Name</Label>
                     <Input
                       name="name"
                       placeholder="e.g., Aspirin Powder"
                       required
-                      className="border-slate-700 bg-slate-800/50 text-white placeholder:text-slate-500"
+                      className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Dimension Type</Label>
+                    <Label className="text-sm font-medium text-gray-700">Dimension Type</Label>
                     <Select name="dimensionType" required>
-                      <SelectTrigger className="border-slate-700 bg-slate-800/50 text-white">
+                      <SelectTrigger className="border-gray-300 focus:border-blue-500 focus:ring-blue-500">
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
-                      <SelectContent className="border-slate-700 bg-slate-800">
+                      <SelectContent>
                         <SelectItem value="WEIGHT">Weight (mg)</SelectItem>
                         <SelectItem value="VOLUME">Volume (mL)</SelectItem>
                         <SelectItem value="COUNT">Count (units)</SelectItem>
@@ -161,35 +163,42 @@ export function AdminContent({ products: initialProducts, orders, user }: AdminC
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Price (paise/base)</Label>
+                    <Label className="text-sm font-medium text-gray-700">Price (paise/base)</Label>
                     <Input
                       name="pricePerBaseUnit"
                       type="number"
                       placeholder="e.g., 5"
                       required
-                      className="border-slate-700 bg-slate-800/50 text-white placeholder:text-slate-500"
+                      className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-slate-300">Stock (base units)</Label>
+                    <Label className="text-sm font-medium text-gray-700">Stock (base units)</Label>
                     <Input
                       name="stockBaseQuantity"
                       type="number"
                       placeholder="e.g., 10000000"
                       required
-                      className="border-slate-700 bg-slate-800/50 text-white placeholder:text-slate-500"
+                      className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
-                  <div className="flex items-end sm:col-span-2 lg:col-span-5">
+                  <div className="flex items-center gap-4 sm:col-span-2 lg:col-span-5 pt-2">
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-lg shadow-indigo-500/25"
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-medium"
                     >
-                      {loading ? "Adding..." : "Add Product"}
+                      {loading ? (
+                        "Adding..."
+                      ) : (
+                        <>
+                          <Plus className="mr-2 h-4 w-4" />
+                          Add Product
+                        </>
+                      )}
                     </Button>
                     {message && (
-                      <span className={`ml-4 text-sm ${message.includes("Error") ? "text-red-400" : "text-emerald-400"}`}>
+                      <span className={`text-sm font-medium ${message.includes("Error") ? "text-red-600" : "text-green-600"}`}>
                         {message}
                       </span>
                     )}
@@ -199,114 +208,117 @@ export function AdminContent({ products: initialProducts, orders, user }: AdminC
             </Card>
 
             {/* Products Table */}
-            <Card className="border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-slate-800 hover:bg-transparent">
-                      <TableHead className="text-slate-400">Name</TableHead>
-                      <TableHead className="text-slate-400">Type</TableHead>
-                      <TableHead className="text-slate-400">Price/Base Unit</TableHead>
-                      <TableHead className="text-slate-400">Stock (base)</TableHead>
-                      <TableHead className="text-slate-400">Stock (display)</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {products.map((product) => {
-                      const baseLabel = getBaseUnitLabel(product.dimensionType as "WEIGHT" | "VOLUME" | "COUNT");
-                      const displayUnit = product.dimensionType === "WEIGHT" ? "kg" : product.dimensionType === "VOLUME" ? "L" : "units";
-                      const displayStock = baseToDisplay(BigInt(product.stockBaseQuantity), displayUnit);
+            <Card className="border border-gray-200 shadow-sm bg-white overflow-hidden">
+              <Table>
+                <TableHeader className="bg-gray-50 border-b border-gray-200">
+                  <TableRow className="hover:bg-gray-50">
+                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-gray-500 h-10">Product Name</TableHead>
+                    <TableHead className="text-xs font-semibold uppercase tracking-wider text-gray-500 h-10">Type</TableHead>
+                    <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-gray-500 h-10">Price/Base</TableHead>
+                    <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-gray-500 h-10">Stock (base)</TableHead>
+                    <TableHead className="text-right text-xs font-semibold uppercase tracking-wider text-gray-500 h-10">Stock (display)</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {products.map((product) => {
+                    const baseLabel = getBaseUnitLabel(product.dimensionType as "WEIGHT" | "VOLUME" | "COUNT");
+                    const displayUnit = product.dimensionType === "WEIGHT" ? "kg" : product.dimensionType === "VOLUME" ? "L" : "units";
+                    const displayStock = baseToDisplay(BigInt(product.stockBaseQuantity), displayUnit);
 
-                      return (
-                        <TableRow key={product.id} className="border-slate-800 hover:bg-slate-800/30">
-                          <TableCell className="font-medium text-white">{product.name}</TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className="border-slate-600 text-slate-300">
-                              {product.dimensionType}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-slate-300">
-                            {formatPrice(BigInt(product.pricePerBaseUnit))}/{baseLabel}
-                          </TableCell>
-                          <TableCell className="font-mono text-sm text-slate-400">
-                            {BigInt(product.stockBaseQuantity).toLocaleString()} {baseLabel}
-                          </TableCell>
-                          <TableCell className="font-mono text-sm text-emerald-400">
-                            {displayStock} {displayUnit}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </CardContent>
+                    return (
+                      <TableRow key={product.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                        <TableCell className="font-medium text-gray-900">{product.name}</TableCell>
+                        <TableCell>
+                          <Badge variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-200 font-medium">
+                            {product.dimensionType}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right text-gray-700">
+                          {formatPrice(BigInt(product.pricePerBaseUnit))}<span className="text-gray-400 text-xs ml-1">/{baseLabel}</span>
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-sm text-gray-600">
+                          {BigInt(product.stockBaseQuantity).toLocaleString()} {baseLabel}
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-sm font-medium text-blue-600">
+                          {displayStock} {displayUnit}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
             </Card>
           </TabsContent>
 
           {/* ─── Orders Tab ─── */}
-          <TabsContent value="orders" className="space-y-4">
+          <TabsContent value="orders" className="space-y-6">
             {orders.length === 0 ? (
-              <Card className="border-slate-800 bg-slate-900/60">
-                <CardContent className="py-12 text-center text-slate-400">
-                  No orders yet
+              <Card className="border border-gray-200 shadow-sm bg-white">
+                <CardContent className="py-16 text-center">
+                  <FileText className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900">No orders found</h3>
+                  <p className="text-gray-500 mt-1">When sellers place orders, they will appear here.</p>
                 </CardContent>
               </Card>
             ) : (
-              orders.map((order) => (
-                <Card key={order.id} className="border-slate-800 bg-slate-900/60 backdrop-blur-sm">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle className="text-base text-white">
-                          Order #{order.id.slice(0, 8)}
-                        </CardTitle>
-                        <CardDescription className="text-slate-400">
-                          By {order.seller.name} ({order.seller.email}) · {new Date(order.createdAt).toLocaleString()}
-                        </CardDescription>
+              <div className="grid gap-6">
+                {orders.map((order) => (
+                  <Card key={order.id} className="border border-gray-200 shadow-sm bg-white overflow-hidden">
+                    <CardHeader className="bg-gray-50 border-b border-gray-200 pb-4 pt-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <CardTitle className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                            Order #{order.id.slice(0, 8)}
+                            <Badge className={order.status === "CONFIRMED" ? "bg-green-100 text-green-800 hover:bg-green-200" : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"}>
+                              {order.status}
+                            </Badge>
+                          </CardTitle>
+                          <CardDescription className="text-gray-500 mt-1">
+                            Placed by <span className="font-medium text-gray-700">{order.seller.name}</span> ({order.seller.email}) on {new Date(order.createdAt).toLocaleString()}
+                          </CardDescription>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium text-gray-500 mb-1">Total</p>
+                          <p className="text-xl font-bold text-gray-900">
+                            {formatPrice(BigInt(order.totalPrice))}
+                          </p>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <Badge className={order.status === "CONFIRMED" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-amber-500/10 text-amber-400 border-amber-500/20"}>
-                          {order.status}
-                        </Badge>
-                        <p className="mt-1 text-lg font-bold text-white">
-                          {formatPrice(BigInt(order.totalPrice))}
-                        </p>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="border-slate-800 hover:bg-transparent">
-                          <TableHead className="text-slate-400">Product</TableHead>
-                          <TableHead className="text-slate-400">Requested (display)</TableHead>
-                          <TableHead className="text-slate-400">Converted (base)</TableHead>
-                          <TableHead className="text-right text-slate-400">Line Price</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {order.items.map((item) => {
-                          const baseLabel = getBaseUnitLabel(item.product.dimensionType as "WEIGHT" | "VOLUME" | "COUNT");
-                          return (
-                            <TableRow key={item.id} className="border-slate-800/50 hover:bg-slate-800/20">
-                              <TableCell className="text-white">{item.product.name}</TableCell>
-                              <TableCell className="font-mono text-sm text-indigo-400">
-                                {Number(item.requestedDisplayQuantity).toFixed(6)} {item.requestedDisplayUnit}
-                              </TableCell>
-                              <TableCell className="font-mono text-sm text-amber-400">
-                                {BigInt(item.convertedBaseQuantity).toLocaleString()} {baseLabel}
-                              </TableCell>
-                              <TableCell className="text-right font-medium text-white">
-                                {formatPrice(BigInt(item.lineItemPrice))}
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                </Card>
-              ))
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <Table>
+                        <TableHeader className="bg-white">
+                          <TableRow className="border-b border-gray-100 hover:bg-white">
+                            <TableHead className="text-xs font-semibold uppercase text-gray-500 h-10">Product</TableHead>
+                            <TableHead className="text-right text-xs font-semibold uppercase text-gray-500 h-10">Requested (display)</TableHead>
+                            <TableHead className="text-right text-xs font-semibold uppercase text-gray-500 h-10">Converted (base)</TableHead>
+                            <TableHead className="text-right text-xs font-semibold uppercase text-gray-500 h-10">Line Price</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {order.items.map((item) => {
+                            const baseLabel = getBaseUnitLabel(item.product.dimensionType as "WEIGHT" | "VOLUME" | "COUNT");
+                            return (
+                              <TableRow key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                                <TableCell className="font-medium text-gray-900">{item.product.name}</TableCell>
+                                <TableCell className="text-right font-mono text-sm text-gray-700">
+                                  {Number(item.requestedDisplayQuantity).toFixed(6)} {item.requestedDisplayUnit}
+                                </TableCell>
+                                <TableCell className="text-right font-mono text-sm text-gray-500">
+                                  {BigInt(item.convertedBaseQuantity).toLocaleString()} {baseLabel}
+                                </TableCell>
+                                <TableCell className="text-right font-medium text-gray-900">
+                                  {formatPrice(BigInt(item.lineItemPrice))}
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             )}
           </TabsContent>
         </Tabs>
