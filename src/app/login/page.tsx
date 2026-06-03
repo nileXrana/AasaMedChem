@@ -55,7 +55,7 @@ export default function LoginPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-              AASA MedChem
+              AASA
             </h1>
             <p className="text-sm text-gray-500 mt-1">
               Inventory & Order Management System

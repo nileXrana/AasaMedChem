@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AASA MedChem - Inventory & Order Management",
-  description: "A high-precision inventory and order management system.",
+  title: "AASA - Inventory & Order Management",
+  description: "Internal inventory and order management system for AASA.",
 };
 
 export default function RootLayout({
