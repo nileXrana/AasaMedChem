@@ -120,13 +120,20 @@ export default function LoginPage() {
         </div>
 
         {/* Demo Credentials Hint */}
-        <div className="mt-8 rounded-xl border border-blue-100 bg-blue-50/50 p-4 text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-2">
+        <div className="mt-8 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-blue-600 mb-3 text-center">
             Demo Accounts
           </p>
-          <div className="flex justify-center gap-6 text-sm text-gray-600">
-            <p><span className="font-medium text-gray-900">Admin:</span> admin@aasa.com (admin123)</p>
-            <p><span className="font-medium text-gray-900">Seller:</span> seller@aasa.com (seller123)</p>
+          <div className="flex flex-col sm:flex-row justify-around gap-4 text-sm text-gray-600">
+            <div className="space-y-1">
+              <p><span className="font-medium text-gray-900">Admin:</span> admin@aasa.com</p>
+              <p className="text-xs text-gray-500"><span className="font-medium text-gray-700">Password:</span> admin123</p>
+            </div>
+            <div className="hidden sm:block border-l border-blue-200/50"></div>
+            <div className="space-y-1">
+              <p><span className="font-medium text-gray-900">Seller:</span> seller@aasa.com</p>
+              <p className="text-xs text-gray-500"><span className="font-medium text-gray-700">Password:</span> seller123</p>
+            </div>
           </div>
         </div>
       </div>
