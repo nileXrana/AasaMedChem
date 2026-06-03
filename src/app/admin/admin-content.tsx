@@ -262,7 +262,7 @@ export function AdminContent({ products: initialProducts, orders, user }: AdminC
               <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-5">
                 <CardTitle className="text-xl font-bold tracking-tight text-gray-900">Register New Product</CardTitle>
                 <CardDescription className="text-gray-500 font-medium">
-                  Add inventory to the catalog. Prices must be in paise (INR × 100). Stock must be in lowest base units (mg/mL/units).
+                  Add inventory. Prices must be in rupees (INR). Stock must be in lowest base units (mg/mL/units).
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-6">
@@ -290,7 +290,7 @@ export function AdminContent({ products: initialProducts, orders, user }: AdminC
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Price (Paise / Base)</Label>
+                    <Label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Price (Base)</Label>
                     <Input
                       name="pricePerBaseUnit"
                       type="number"

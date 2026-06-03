@@ -67,7 +67,7 @@ export async function addProduct(formData: FormData) {
     data: {
       name,
       dimensionType: dimensionType as "WEIGHT" | "VOLUME" | "COUNT",
-      pricePerBaseUnit: BigInt(pricePerBaseUnit),
+      pricePerBaseUnit: BigInt(Math.round(parseFloat(pricePerBaseUnit) * 100)),
       stockBaseQuantity: BigInt(stockBaseQuantity),
     },
   });
